@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import Hello from './Hello';
+import App from './App';
 
 // index.blade.phpのid="app"を読み込む
 const container = document.getElementById('app');
@@ -8,6 +8,6 @@ const root = createRoot(container!); // createRoot(container!) if you use TypeSc
 
 root.render(
   <>
-    <Hello />
+    <App/>
   </>
 );
