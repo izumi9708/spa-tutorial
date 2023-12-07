@@ -14,6 +14,15 @@ class TaskController extends Controller
         return response($tasks, 200);
     }
 
-    
+    public function createTask(Request $response)
+    {
+        $task = new Task();
+        $task->title = $response->title;
+        $task->body  = $response->body;
+        $task->save();
 
+        return response()->json([
+            "Message" => "success"
+        ], 201);
+    }
 }

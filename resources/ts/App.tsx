@@ -1,20 +1,64 @@
 import { useEffect, useState } from "react";
-import { getAllTasks } from "./operationTasks";
+import { getAllTasks, createTask } from "./operationTasks";
 
 interface Task {
-  id:number
-  title:string
-  body:string
+  id?: number
+  title: string
+  body: string
 }
 
 function App() {
-  const [tasks,setTasks] = useState<Task[]>();
+  const [tasks, setTasks] = useState<Task[]>();
+  const [title, setTitle] = useState<string>();
+  const [body, setBody] = useState<string>();
+
+  const postValue = () => {
+    const title = document.querySelector('.input-title') as HTMLInputElement;
+    const body = document.querySelector('.input-body') as HTMLInputElement;
+    let boolValue: boolean[] = [];
+
+    // バリデーション
+    if (title.value.replace(/\s+/g, "") !== '') {
+      boolValue.push(true);
+    }
+
+    // バリデーション
+    if (body.value.replace(/\s+/g, "") !== '') {
+      boolValue.push(true);
+    }
+
+    // バリデーションが問題なければpost
+    if (boolValue.length === 2) {
+      createTask(
+        {
+          'title': title.value.replace(/\s+/g, ""),
+          'body': body.value.replace(/\s+/g, "")
+        }
+      )
+        .then(res => {
+          setTitle(title.value.replace(/\s+/g, ""));
+          setBody(body.value.replace(/\s+/g, ""));
+
+          title.value = '';
+          body.value = '';
+
+          alert('タスクが登録されました');
+
+        }).catch(error => {
+          console.log(error);
+
+        })
+
+    } else {
+      alert('タイトルまたは本文が入力されていません。');
+    }
+  }
 
   useEffect(() => {
     getAllTasks().then(res => {
       setTasks(res)
     })
-  },[])
+  }, [title, body])
 
   return (
     <div className="container">
@@ -30,16 +74,14 @@ function App() {
                 <h2>タスクの追加</h2>
 
                 <div className="form-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="text"
-                    autoComplete="off" />
+                  <div>タイトル：<input type="text" className="form-control input-title" /></div>
+                  <div>本文：<input type="text" className="form-control input-body" /></div>
                 </div>
 
                 <button
-                  type="submit"
+                  type="button"
                   className="btn btn-primary"
+                  onClick={postValue}
                 >追加</button>
               </form>
 
