@@ -25,4 +25,12 @@ class TaskController extends Controller
             "Message" => "success"
         ], 201);
     }
+
+    public function deleteTask($id)
+    {
+        $task = Task::where('id',$id)->delete();
+        return response()->json([
+            "Message" => "success"
+        ],201);
+    }
 }
