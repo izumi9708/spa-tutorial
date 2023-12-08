@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { getAllTasks, createTask } from "./operationTasks";
+import { ChangeEvent, ReactEventHandler, useEffect, useState } from "react";
+import { getAllTasks, createTask, deleteTask } from "./operationTasks";
 
 interface Task {
   id?: number
@@ -12,7 +12,7 @@ function App() {
   const [title, setTitle] = useState<string>();
   const [body, setBody] = useState<string>();
 
-  const postValue = () => {
+  function postValue() {
     const title = document.querySelector('.input-title') as HTMLInputElement;
     const body = document.querySelector('.input-body') as HTMLInputElement;
     let boolValue: boolean[] = [];
@@ -54,6 +54,18 @@ function App() {
     }
   }
 
+
+  function getId(event:ChangeEvent) {
+    const id = event.target.closest('li')?.dataset.id;
+    
+    id && deleteTask(id)
+    .then(res => {
+      getAllTasks().then(res => {
+        setTasks(res)
+      })
+    })
+  }
+
   useEffect(() => {
     getAllTasks().then(res => {
       setTasks(res)
@@ -91,9 +103,9 @@ function App() {
                 <ul>
                   {tasks && tasks.map(item => {
                     return (
-                      <li key={item.id}>
+                      <li key={item.id} data-id={item.id}>
                         <label>
-                          <input type="checkbox" />
+                          <input type="checkbox" onChange={getId} />
                           <div>
                             <div>{item.title}</div>
                             <div>{item.body}</div>
